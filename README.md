@@ -4,7 +4,7 @@ Listen to your DOM events with a mini function 🤏🏾
 
 ### How does it works
 
-```
+```js
 import On from "on-dom"
 
 const domElement = new On("div", {
