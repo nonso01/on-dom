@@ -68,12 +68,4 @@ class On {
   }
 }
 
-let num = 0;
-let a: On = new On("html", {
-  click() {
-    num++;
-    alert(num);
-  },
-});
-console.log(a);
 export default On;
