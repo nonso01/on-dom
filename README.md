@@ -18,7 +18,7 @@ Listen to your DOM events with a mini function 🤏🏾
 ```js
 import On from "on-dom";
 
-const nodeOrNodeLIst = On(window, {
+const nodeOrNodeLIst = new On(window, {
   scroll() {
     if (this.scrollY > 100) console.log("show your nav bruh");
   },
@@ -45,11 +45,11 @@ const nodeOrNodeLIst = On(window, {
 import On from "on-dom";
 
 let num = 0;
-const whyThis = on("html", {
+const whyThis = new On("html", {
   click: function (e) {
     num++;
     if (num >= 5) {
-      const anotherOne = On(this, {
+      const anotherOne = new On(this, {
         touchmove(e) {
           // this here is still the HTMLHtmlElement
         },
