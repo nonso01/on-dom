@@ -15,41 +15,39 @@ class On {
       typeof targets === "string"
         ? document.querySelectorAll(targets)
         : targets;
-    this.eventObject = eventObject;
+    this.eventObject = Object.freeze(eventObject);
     this.eventStack = new Map();
+
+    for (const e in this.eventObject)
+      this.eventStack.set(e, this.eventObject[e]);
     try {
       this.#add();
-    } catch (e) {
-      console.warn(e);
+    } catch (error) {
+      console.warn(error);
     }
   }
 
   #add() {
     if (this.targets instanceof NodeList) {
       this.targets.forEach((node: Node) => {
-        for (const evn in this.eventObject) {
-          node.addEventListener(evn, this.eventObject[evn].bind(node));
-          this.eventStack.set(evn, this.eventObject[evn]);
-        }
+        this.eventStack.forEach((v: any /* function */, k: string) =>
+          node.addEventListener(k, v.bind(node)),
+        );
       });
     } else {
-      for (const evn in this.eventObject) {
-        this.targets?.addEventListener(
-          evn,
-          this.eventObject[evn].bind(this.targets),
-        );
-        this.eventStack.set(evn, this.eventObject[evn]);
-      }
+      this.eventStack.forEach((v: any, k: string) =>
+        this.targets.addEventListener(k, v.bind(this.targets)),
+      );
     }
   }
 
   get stack() {
     const s: string[] = [];
-    this.eventStack.forEach((v: Function, k: string) => s.push(k));
+    this.eventStack.forEach((v: any /* function */, k: string) => s.push(k));
     return s;
   }
 
-  removeEvent(eventName: EventName) {
+  removeEvent(eventName: EventName = "") {
     /* issue
      * removing the event
      */
