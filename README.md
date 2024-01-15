@@ -1,6 +1,10 @@
 # on-dom
 
 Listen to your DOM events with a mini function 🤏🏾
+____
+
+> The On class is just a small function that adds numerous events to the target HTMLElement, ElementRef or NodeList (many elemets) at the same time.
+> Below are the different ways of using it 
 
 ### Here is how it works
 
@@ -45,7 +49,7 @@ const nodeOrNodeLIst = new On(window, {
 import On from "on-dom";
 
 let num = 0;
-const whyThis = new On("html", {
+const thisIsJustTheTargetElement = new On("html", {
   click: function (e) {
     num++;
     if (num >= 5) {
