@@ -6,6 +6,7 @@
     "allowJs": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "types": ["./@types/on-dom.d.ts"],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,

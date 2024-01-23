@@ -1,10 +1,12 @@
 # on-dom
 
 Listen to your DOM events with a mini function 🤏🏾
-____
 
-> The On class is just a small function that adds numerous events to the target HTMLElement, ElementRef or NodeList (many elemets) at the same time.
-> Below are the different ways of using it 
+---
+
+> The On class is just a small function that adds numerous events to the target HTMLElement, ElementRef or NodeList all at the same time.
+
+> Below are the different ways of using it
 
 ### Here is how it works
 
@@ -55,12 +57,15 @@ const thisIsJustTheTargetElement = new On("html", {
     if (num >= 5) {
       const anotherOne = new On(this, {
         touchmove(e) {
-          // this here is still the HTMLHtmlElement
+          // (this) here is still refers to the HTMLHtmlElement
         },
       });
     }
   },
 });
 ```
+
+> Works on typescript projects as well
+> If you come across an issue, please do well to report.
 
 > the `On` class returns a couple of Objects as well. Will be discussed later, but for now simply add events with `new On()`

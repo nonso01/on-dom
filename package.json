@@ -1,8 +1,9 @@
 {
   "name": "on-dom",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Add and Remove DOM events with a mini function",
   "main": "dist/index.js",
+  "types": "./@types/on-dom.d.ts",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
