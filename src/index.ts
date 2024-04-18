@@ -1,10 +1,12 @@
-type Targets = string | NodeList | any; // => replace this
+type Targets = string | NodeList | any;
 type EventName = string;
-type EventStack = Map<string, Function | any>; // => replace this
+type EventStack = Map<string, Function | any>;
 
 interface EventObject {
   [key: string]: (e?: Event) => void;
 }
+
+// check if we're on the browser or server
 
 class On {
   targets: Targets;
