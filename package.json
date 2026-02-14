@@ -1,6 +1,6 @@
 {
   "name": "on-dom",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Add and Remove DOM events with a mini function",
   "main": "dist/index.js",
   "types": "./@types/on-dom.d.ts",
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/nonso01/on-dom/issues"
   },
-  "homepage": "https://github.com/nonso01/on-dom#readme"
+  "homepage": "https://github.com/nonso01/on-dom#readme",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
 }
