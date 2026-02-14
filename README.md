@@ -1,71 +1,176 @@
 # on-dom
 
-Listen to your DOM events with a mini function 🤏🏾
+Listen to DOM events with minimal effort
 
 ---
 
-> The On class is just a small function that adds numerous events to the target HTMLElement, ElementRef or NodeList all at the same time.
+> The `On` class  attaches multiple events to target HTMLElements, ElementRefs, or NodeLists all at once.
 
-> Below are the different ways of using it
+## Usage
 
-### Here is how it works
+> The `On` class accepts just **two** arguments: `targets` and `eventObject`.
+> 
+> `targets` can be a **string selector**, **DOM element**, **HTMLElement**, **Window**, **Document**, or **NodeList**.
+>
+> String selectors are automatically normalized into a NodeList if elements are found.
+>
+> The `eventObject` is an object containing **event names** as keys and their corresponding **event handlers** (functions) as values.
 
-> the `On` class accepts just **two** arguments, `targets` and `eventObject`.
-> `targets` here can either be a **string**, **DOM Ref**, **HTMLElement**, **NodeList**
-> the **string** gets converted into a NodeList, if at all it's present in the DOM.
+### Installation
+```
+npm install on-dom
 
-> the `eventObject` on the other hand is an Object comprised of , **eventName** and **eventHandler** or `methods`.
-> this `key/value` pair gets stored in a **Map** for other operations.
+or
 
-### example
-
----
-
-```js
-import On from "on-dom";
-
-const nodeOrNodeLIst = new On(window, {
-  scroll() {
-    if (this.scrollY > 100) console.log("show your nav bruh");
-  },
-  animationend(e) {
-    /* (e) here is basically Event*/
-    /* so things like
-     * e.stopPropagation()
-     * will work just fine
-     */
-    console.log(`an animation just ended on ${e.target.tagName} element`);
-  },
-  wheel(e) {
-    // you can add as many events as needed
-  },
-});
+pnpm install on-dom
 ```
 
-### javaScript **this**
+### Examples
 
-> within the `eventObject` methods, `this` here represents the `targets` arguments.
-> you can use it as you wish, because it's the same as the `targets`
-
+---
 ```js
 import On from "on-dom";
 
-let num = 0;
-const thisIsJustTheTargetElement = new On("html", {
-  click: function (e) {
-    num++;
-    if (num >= 5) {
-      const anotherOne = new On(this, {
-        touchmove(e) {
-          // (this) here is still refers to the HTMLHtmlElement
-        },
-      });
+// ============================================================================
+// BASIC USAGE
+// ============================================================================
+
+// 1. Single element with multiple events
+const button = new On(".my-button", {
+  click(e: Event) {
+    console.log("Button clicked!", e);
+  },
+  mouseenter() {
+    console.log("Mouse entered");
+  },
+  mouseleave() {
+    console.log("Mouse left");
+  },
+});
+
+// 2. Multiple elements with CSS selector
+const links = new On("a.external", {
+  click(e: Event) {
+    e.preventDefault();
+    console.log("External link clicked");
+  },
+});
+
+// 3. Window events
+const windowEvents = new On(window, {
+  scroll(e: Event) {
+    if ((e.target as Window).scrollY > 100) {
+      console.log("Scrolled past 100px");
+    }
+  },
+  resize(e: Event) {
+    console.log("Window resized");
+  },
+});
+
+// 4. Document events
+const docEvents = new On(document, {
+  DOMContentLoaded() {
+    console.log("DOM loaded");
+  },
+  keydown(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      console.log("Escape pressed");
     }
   },
 });
+
+// 5. NodeList (already selected elements)
+const selected = document.querySelectorAll(".card");
+const cardEvents = new On(selected, {
+  click() {
+    console.log("Card clicked:", this);
+  },
+});
+
+// ============================================================================
+// EVENT REMOVAL
+// ============================================================================
+
+const form = new On("form", {
+  submit(e: Event) {
+    e.preventDefault();
+    console.log("Form submitted");
+  },
+  input(e: Event) {
+    console.log("Input changed");
+  },
+});
+
+// Remove specific event
+form.removeEvent("input");
+console.log(form.stack); // ['submit'] - 'input' is gone
+
+// Remove all events
+form.removeAllEvents();
+console.log(form.stack); // [] - all events removed
+
+// ============================================================================
+// CLEANUP FOR SPAs
+// ============================================================================
+
+class Modal {
+  private events: On | null = null;
+
+  open() {
+    const modal = document.getElementById("modal");
+    this.events = new On(modal, {
+      click: (e: Event) => {
+        if ((e.target as HTMLElement).classList.contains("close")) {
+          this.close();
+        }
+      },
+    });
+  }
+
+  close() {
+    // IMPORTANT: Clean up listeners when modal closes
+    if (this.events) {
+      this.events.destroy();
+      this.events = null;
+    }
+  }
+}
+
+// Usage
+const modal = new Modal();
+modal.open();
+// ... later ...
+modal.close(); //  All listeners removed, no memory leak!
+
+// ============================================================================
+// DEBUGGING AND INSPECTION
+// ============================================================================
+
+const myEvents = new On(".item", {
+  click() {},
+  hover() {},
+  focus() {},
+});
+
+console.log(myEvents.stack); // ['click', 'hover', 'focus']
+console.log(myEvents.listenerCount); // 3 (or more if multiple elements)
+console.log(myEvents.trackedListeners); // Full listener objects for debugging
+console.log(myEvents.destroyed); // false
+
+// ============================================================================
+// ARROW FUNCTIONS
+// ============================================================================
+
+const element = new On("#search", {
+  // Regular function - 'this' = element
+  input(e: Event) {
+    console.log("Element:", this);
+  },
+
+  // Arrow function - now properly scoped
+  keydown: (e: KeyboardEvent) => {
+    console.log("Search input");
+  },
+});
 ```
-
-> Works on typescript projects as well
-> If you come across an issue, please do well to report.
-
-> the `On` class returns a couple of Objects as well. Will be discussed later, but for now simply add events with `new On()`
